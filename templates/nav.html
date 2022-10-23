@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/8eb01fa4fc.js" crossorigin="anonymous"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>This is Just a Template</title>
+</head>
+
+<body>
+    <div id="nav">
+        <div id="nav_head">
+            CHAT
+        </div>
+    </div>
+    {% block data %}{% endblock data %}
+</body>
+<style>
+    body {
+        padding: 0;
+        margin: 0;
+        background-color: rgb(37, 37, 37);
+    }
+
+    #nav {
+        background-color: rgb(37, 37, 37);
+        padding: 10px;
+        border-bottom: 3.7px solid rgb(150, 150, 150);
+    }
+
+    #nav_head {
+        color: rgb(150, 150, 150);
+        font-size: 27px;
+        font-family: 'Montserrat', sans-serif;
+
+    }
+</style>
+{% block sty %}{% endblock sty %}
+
+</html>

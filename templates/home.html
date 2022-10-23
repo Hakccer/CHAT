@@ -1,0 +1,97 @@
+{% extends 'nav.html' %}
+
+{% block data %}
+<form action="" method="POST">{% csrf_token %}
+    <div id="main">
+        <div class="box">
+            <div class="box_head">
+                Your Name
+            </div>
+            <div class="box_input">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Your Name Here" name="name">
+            </div>
+        </div>
+        <div class="box">
+            <div class="box_head">
+                The Room Name
+            </div>
+            <div class="box_input">
+                <i class="fa-solid fa-globe"></i>
+                <input type="text" placeholder="Enter Room Name Here" name="room_name">
+            </div>
+        </div>
+        <div id="enter">
+            <button type="submit">
+                Enter
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock data %}
+
+{% block sty %}
+<style>
+    .box {
+        width: 50%;
+        margin: auto;
+        border: 2.3px solid rgb(150, 150, 150);
+        margin-top: 23px;
+        border-radius: 7px;
+        padding: 20px;
+    }
+
+    input {
+        border: none;
+        outline: none;
+        background-color: transparent;
+        color: white;
+        font-size: 20px;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    ::placeholder {
+        color: white;
+        font-size: 20px;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .box_head {
+        font-family: 'Montserrat', sans-serif;
+        color: white;
+        font-size: 25px;
+        margin-bottom: 30px;
+        padding-bottom: 7px;
+        border-bottom: 3px solid rgb(150, 150, 150);
+        width: max-content;
+    }
+
+    .box_input {
+        border-bottom: 2px solid white;
+        display: flex;
+        padding-bottom: 7px;
+    }
+
+    i {
+        color: white;
+        font-size: 21px;
+        padding-right: 5px;
+    }
+
+    #enter {
+        width: 50%;
+        margin: auto;
+        margin-top: 20px;
+    }
+
+    button {
+        width: 100%;
+        height: 40px;
+        outline: none;
+        border: none;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 15px;
+        border-radius: 7px;
+    }
+</style>
+{% endblock sty %}

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/8eb01fa4fc.js" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="room_name">
+        <div id="derek">
+            <div id="tell">
+                <div>
+                    <i class="fa-solid fa-globe"></i>
+                </div>
+                {{room_name}}
+            </div>
+            <div id="leave">
+                <i onclick="window.location.href='{{request.scheme}}://{{request.get_host}}{% url 'leave' %}'"
+                    class="fa-solid fa-arrow-right-from-bracket"></i>
+            </div>
+        </div>
+        <div id="users">
+
+        </div>
+    </div>
+    <div id="main_chat">
+    </div>
+    <div id="form">
+        <div id="send_messages">
+            <div id="send_mes">
+                {% csrf_token %}
+                <input type="text" placeholder="Enter Your Message Here">
+            </div>
+            <button type="submit" id="subs">
+                send
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>
+<style>
+    body {
+        background-color: black;
+        padding: 0;
+        margin: 0;
+    }
+
+    #room_name {
+        background-color: rgb(92, 92, 97);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        color: white;
+        border-bottom: 2px solid white;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 20px;
+        padding: 10px;
+    }
+
+    .fa-globe {
+        margin-right: 10px;
+    }
+
+    #form {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: rgb(92, 92, 97);
+    }
+
+    #send_messages {
+        padding: 13px;
+        display: flex;
+    }
+
+    #send_mes {
+        width: 100%;
+        padding: 5px;
+        border-bottom: 2px solid white;
+    }
+
+    input {
+        width: 100%;
+        background-color: transparent;
+        color: white;
+        outline: none;
+        border: none;
+        box-sizing: border-box;
+        font-size: 15px;
+        font-family: 'Montserrat', sans-serif;
+        letter-spacing: .3px;
+    }
+
+    ::placeholder {
+        color: white;
+        font-size: 15px;
+        font-family: 'Montserrat', sans-serif;
+        letter-spacing: .3px;
+    }
+
+    button {
+        background-color: white;
+        font-size: 15px;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .chat_box {
+        padding: 10px;
+        background-color: rgb(57, 82, 94);
+        margin: 20px;
+        color: white;
+        border-radius: 10px;
+    }
+
+    .chat_head {
+        font-size: 20px;
+        font-family: 'Montserrat', sans-serif;
+        border-bottom: 2px solid white;
+        width: fit-content;
+    }
+
+    .chat_message {
+        font-family: 'Montserrat', sans-serif;
+        color: white;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    #main_chat {
+        margin-bottom: 250px;
+        margin-top: 150px;
+    }
+
+    #tell {
+        display: flex;
+        width: fit-content;
+    }
+
+    #leave {
+        margin-left: auto;
+        margin-right: 20px;
+    }
+
+    #derek {
+        display: flex;
+    }
+
+    .used {
+        width: fit-content;
+        text-align: center;
+        margin-top: 20px;
+        margin-right: 15px;
+    }
+
+    .user_head {
+        margin-top: 5px;
+        font-size: 12px;
+    }
+
+    #users {
+        display: flex;
+        overflow-x: auto;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $("#subs").click(function () {
+            var my_value = document.getElementsByTagName('input')[1].value;
+            $.ajax({
+                url: 'message',
+                type: 'post',
+                data: {
+                    message: my_value
+                },
+                headers: {
+                    'X-CSRFToken': document.getElementById("send_mes").getElementsByTagName('input')[0].value
+                },
+                success: function (response) {
+                    console.log("Response Reached Successfully");
+                }
+            })
+        });
+    });
+    var getter = function () {
+        $(document).ready(function () {
+            $.ajax({
+                url: 'messages',
+                type: 'get',
+                data: {
+                    asd: 'sad'
+                },
+                success: function (response) {
+                    document.getElementById("main_chat").innerHTML = '';
+                    document.getElementById("users").innerHTML = ''
+                    for (let i = 1; i < response.mess.length; i++) {
+                        document.getElementById("main_chat").innerHTML += `<div class="chat_box">
+                                    <div class="chat_head">
+                                        ${response.mess[i][0]}
+                                    </div>
+                                    <div class="chat_message">
+                                        ${response.mess[i][1]}
+                                    </div>
+                                </div>`
+                    }
+                    for (let j = 0; j < response.mayor.all.length; j++) {
+                        document.getElementById("users").innerHTML += `<div class="used">
+                                <i class="fa-solid fa-circle-user"></i>
+                                <div class="user_head">
+                                    ${response.mayor.all[j]}
+                                </div>
+                            </div>`
+                    }
+                }
+            })
+        });
+    }
+    setInterval(getter, 300);
+</script>
