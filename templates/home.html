@@ -21,6 +21,11 @@
                 <input type="text" placeholder="Enter Room Name Here" name="room_name">
             </div>
         </div>
+        {% if error %}
+        <div style="color:'white';">
+            {{error}}
+        </div>
+        {% endif %}
         <div id="enter">
             <button type="submit">
                 Enter
@@ -92,6 +97,12 @@
         font-family: 'Montserrat', sans-serif;
         font-size: 15px;
         border-radius: 7px;
+    }
+
+    @media only screen and (max-width:683px) {
+        .box {
+            width: 90%;
+        }
     }
 </style>
 {% endblock sty %}
