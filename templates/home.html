@@ -22,7 +22,7 @@
             </div>
         </div>
         {% if error %}
-        <div style="color:'white';">
+        <div style="color: white; text-align: center; font-family: 'Montserrat', sans-serif; margin-top: 10px;">
             {{error}}
         </div>
         {% endif %}
@@ -101,7 +101,10 @@
 
     @media only screen and (max-width:683px) {
         .box {
-            width: 90%;
+            width: auto;
+            margin: 10px;
+            overflow-x: auto;
+            margin-top: 20px;
         }
     }
 </style>
