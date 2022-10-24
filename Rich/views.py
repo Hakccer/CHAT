@@ -17,34 +17,42 @@ def check(request):
 
 
 def home(request):
-    check(request)
-    if request.session['room'] == None:
-        if request.method == 'POST':
-            my_name = request.POST.get('name')
-            room = request.POST.get("room_name")
-            if my_name != '' and room != '':
-                my_room = Room.objects.filter(name=room)
-                if len(my_room) <= 0:
-                    my_name = my_name.lower()
-                    my_roomie = Room.objects.create(
-                        name=room, users=json.dumps({"all": [my_name.lower()]}), messages=json.dumps({'mess': [[]]}))
-                    my_roomie.save()
-                    request.session['room'] = str(room).capitalize()
-                    request.session['use_name'] = my_name
-                else:
-                    frill = my_room[0].users
-                    frill = frill.replace("\'", "\"")
-                    frill = json.loads(frill)
-                    print(frill, my_name)
-                    if my_name not in frill['all']:
-                        frill['all'].append(my_name.lower())
-                    my_room.update(users=json.dumps(frill))
-                    request.session['room'] = str(room).capitalize()
-                    request.session['use_name'] = my_name
-                return redirect(f"rooms/{request.session['room']}")
-        return render(request, "home.html")
-    else:
-        return redirect(f"rooms/{request.session['room']}")
+    try:
+        check(request)
+        if request.session['room'] == None:
+            if request.method == 'POST':
+                my_name = request.POST.get('name')
+                room = request.POST.get("room_name").lower()
+                if my_name != '' and room != '':
+                    my_room = Room.objects.filter(name=room)
+                    if len(my_room) <= 0:
+                        my_name = my_name.lower()
+                        my_roomie = Room.objects.create(
+                            name=room, users=json.dumps({"all": [my_name.lower()]}), messages=json.dumps({'mess': [[]]}))
+                        my_roomie.save()
+                        request.session['room'] = str(room)
+                        request.session['use_name'] = my_name
+                    else:
+                        frill = my_room[0].users
+                        frill = frill.replace("\'", "\"")
+                        frill = json.loads(frill)
+                        print(frill['all'], my_name)
+                        if my_name.lower() not in frill['all']:
+                            frill['all'].append(my_name.lower())
+                        else:
+                            print("Hello World Room Exists same people also exists")
+                            return render(request, "home.html", {'error': "Guy with this username already exist"})
+                        my_room.update(users=json.dumps(frill))
+                        request.session['room'] = str(room)
+                        request.session['use_name'] = my_name
+                    return redirect(f"rooms/{request.session['room']}")
+            return render(request, "home.html")
+        else:
+            return redirect(f"rooms/{request.session['room']}")
+    except Exception as e:
+        my_room = Room.objects.filter(name=request.session['room'].lower())
+        my_room.delete()
+        return render(request, "home.html", {'error': "Something Went Totally Wrong"})
 
 
 def request_check(request):
@@ -53,32 +61,35 @@ def request_check(request):
 
 
 def leave(request):
-    my_room = Room.objects.filter(name=request.session['room'].lower())
-    if len(my_room) > 0:
-        frill = my_room[0].users.replace("\'", "\"")
-        frill = json.loads(frill)
-        frillo = frill['all']
-        print(len(frillo))
-        for i in range(len(frillo)):
-            print(frillo)
-            if frillo[i].lower() == request.session['use_name'].lower():
-                frillo.pop(i)
-                break
-        if len(frillo) <= 0:
-            my_room.delete()
+    if request.session['room'] != None:
+        my_room = Room.objects.filter(name=request.session['room'].lower())
+        if len(my_room) > 0:
+            frill = my_room[0].users.replace("\'", "\"")
+            frill = json.loads(frill)
+            frillo = frill['all']
+            print(len(frillo))
+            for i in range(len(frillo)):
+                print(frillo)
+                if frillo[i].lower() == request.session['use_name'].lower():
+                    frillo.pop(i)
+                    break
+            if len(frillo) <= 0:
+                my_room.delete()
+            else:
+                frill['all'] = frillo
+                my_room.update(users=json.dumps(frill))
+                my_room[0].save()
+            request.session['room'] = None
+            request.session['use_name'] = None
+            request.build_absolute_uri('')
+            return redirect('/')
         else:
-            frill['all'] = frillo
-            my_room.update(users=json.dumps(frill))
-            my_room[0].save()
-        request.session['room'] = None
-        request.session['use_name'] = None
-        request.build_absolute_uri('')
-        return redirect('/')
-    else:
-        request.session['room'] = None
-        request.session['use_name'] = None
-        request.build_absolute_uri('')
-        return redirect('/')
+            request.session['room'] = None
+            request.session['use_name'] = None
+            request.build_absolute_uri('')
+            return redirect('/')
+    request.build_absolute_uri('')
+    return redirect('/')
 
 
 def sender(request):
